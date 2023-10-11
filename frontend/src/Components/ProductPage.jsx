@@ -7,16 +7,19 @@ export default function ProductPage() {
 
     const { productName } = useParams()
     const { url } = useSelector(state => state.siteConfig)
-    const { user } = useSelector(state => state.auth)
+    const { user, isLoggedin } = useSelector(state => state.auth)
     const dispatch = useDispatch()
 
     const [product, setProduct] = useState({})
     const [starArray, setStarArray] = useState([])
     const [navSectionName, setNavSectionName] = useState('product-informations')
+    const [reviews, setReviews] = useState([])
+
+    const [choosedStar, setChoosedStar] = useState(-1)
+    const [comment, setComment] = useState('')
 
     const getProduct = async () => {
         let product = await fetch(url + '/get-product/' + productName).then(_res => _res.json())
-        console.log(product)
 
         let star = product.product.reviews.averageStar
         let _starArray = []
@@ -33,7 +36,7 @@ export default function ProductPage() {
         }
         setStarArray(_starArray)
         setProduct(product.product)
-        //background: -webkit-linear-gradient(left, #00ff00 50%, #fff 50%)
+        getUserNames(product.product)
     }
 
     const favoriteHandle = async () => {
@@ -46,16 +49,77 @@ export default function ProductPage() {
             body: JSON.stringify({ userId: user._id, productId: product._id })
         }).then(_res => _res.json())
 
-        if (_favoriteHandle.action) {
-            console.log(true)
-            dispatch(updateUser(_favoriteHandle.user))
-        }
+        if (_favoriteHandle.action) dispatch(updateUser(_favoriteHandle.user))
         else console.log(false)
+    }
+
+    const addToCart = (productId) => {
+        let cartObj = JSON.parse(localStorage.getItem('cart'))
+        if (cartObj == null) localStorage.setItem('cart', JSON.stringify([{ productId, image: product.image, title: product.title, price: product.price, quantity: 1 }]))
+        else {
+            if (cartObj.findIndex(product => product.productId == productId) == -1) {
+                cartObj.push({ productId, image: product.image, title: product.title, price: product.price, quantity: 1 })
+                localStorage.setItem('cart', JSON.stringify(cartObj))
+            }
+        }
+    }
+
+    const dynamicStarColoring = (e) => {
+        let parentNode = e.target.parentNode.children
+        let hoveredStarIndex = e.target.id.slice(-1)
+        for (let i = 0; i < parentNode.length; i++) {
+            parentNode[i].style.color = ''
+        }
+        for (let i = 0; i < hoveredStarIndex; i++) {
+            parentNode[i].style.color = 'yellow'
+        }
+    }
+
+    const removeStarsColor = (e) => {
+        if (choosedStar == -1) {
+            let parentNode = e.target.parentNode.children
+            for (let i = 0; i < parentNode.length; i++) {
+                parentNode[i].style.color = ''
+            }
+        }
+    }
+
+    const addReview = async (e) => {
+        e.preventDefault()
+
+        if (choosedStar < 1) alert('Choosed star can not be 0')
+        else {
+            let _addReview = await fetch(url + '/add-review', {
+                method: 'POST', headers: {
+                    'Accept': 'application/json,text/plain',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId: user._id, productId: product._id, star: choosedStar, comment })
+            }).then(_res => _res.json())
+
+            if (_addReview.action) {
+                alert('Review added')
+                document.getElementById('add-review-form').style.display == 'none'
+            }
+            else alert(_addReview.msg)
+        }
+    }
+
+    const getUserNames = async (product) => {
+        let _reviews = []
+        for (let i in product.reviews.reviewsArray) {
+            let _user = await fetch(url + '/get-user/' + product.reviews.reviewsArray[i].userId).then(_res => _res.json())
+
+            if (_user.action) {
+                _reviews.push({ username: _user.user.firstName, date: product.reviews.reviewsArray[i].date, star: product.reviews.reviewsArray[i].star, comment: product.reviews.reviewsArray[i].comment })
+            }
+        }
+        setReviews(_reviews)
     }
 
     useEffect(() => {
         getProduct()
-    }, [])
+    }, [user])
 
     return (
         <div className="product-page container">
@@ -70,18 +134,30 @@ export default function ProductPage() {
                             <div className="review-info-div">
                                 <span className="stars">
                                     {starArray && starArray.map((star, index) =>
-                                        <i key={index} className="fa-regular fa-star" />
+                                        <i style={{ color: product.reviews.averageStar > index ? 'yellow' : 'none' }} key={index} className="fa-solid fa-star" />
                                     )}
                                 </span>
                                 {product && product.reviews && <span>{'(' + product.reviews.averageStar + ')'}</span>}
                                 <span className="reviews-number">
-                                    <span>{product?.reviews?.averageStar}</span>
+                                    <span>{product?.reviews?.reviewsArray.length}</span>
                                     <span> reviews</span>
                                 </span>
                             </div>
                             <div className="buttons-div">
-                                <button className="blue-btn">Add To Cart</button>
-                                <i onClick={() => favoriteHandle()} style={{ color: user?.favorites?.findIndex(item => item.productId == product._id) == -1 ? '' : '#22c55e' }} className="add-to-favorites-btn fa-regular fa-heart" />
+                                <button
+                                    disabled={product.stock > 0 ? false : true}
+                                    style={{
+                                        background: localStorage.getItem('cart') == null ?
+                                            '' : JSON.parse(localStorage.getItem('cart')).findIndex(item => item.productId == product._id) != -1 ? '#22c55e' : ''
+                                    }}
+                                    onClick={(e) => { e.target.style.background = '#22c55e'; addToCart(product._id) }} className="blue-btn">
+                                    {product.stock > 0 ? 'Add To Cart' : 'Out of stock'}
+                                </button>
+                                {user &&
+                                    <i onClick={() => favoriteHandle()}
+                                        style={{ display: isLoggedin ? 'flex' : 'none', color: user.favorites?.findIndex(item => item.productId == product._id) == -1 ? '' : '#22c55e' }}
+                                        className="add-to-favorites-btn fa-regular fa-heart" />
+                                }
                             </div>
                             <div className="main-features">
                                 <span className="main-features-header">Main Features</span>
@@ -106,6 +182,58 @@ export default function ProductPage() {
                                         <span>{item.includes('-') ? item.replace('-', ' ') : item}</span>
                                         <span>{Object.values(product.features)[index].includes('_') ? Object.values(product.features)[index].replace('_', ' ') : Object.values(product.features)[index]}</span>
                                     </span>
+                                )}
+                            </div>
+                        </div>
+                        <div style={{ display: navSectionName == 'reviews' ? 'flex' : 'none' }} className="reviews-section">
+                            <form style={{ display: isLoggedin ? '' : 'none' }} id="add-review-form" onSubmit={addReview} className="add-review-form">
+                                <div className="header">
+                                    <i className="fa-regular fa-message" />
+                                    <h4>Add Review</h4>
+                                </div>
+                                <div className="body">
+                                    <div className="stars-div">
+                                        {[...Array(5)].map((star, index) =>
+                                            <i key={index}
+                                                onClick={(e) => {
+                                                    dynamicStarColoring(e)
+                                                    setChoosedStar(index + 1)
+                                                }}
+                                                id={'star-' + (index + 1)} className="fa-solid fa-star"
+                                                onMouseOut={(e) => removeStarsColor(e)}
+                                                onMouseOver={(e) => dynamicStarColoring(e)} />
+                                        )}
+                                    </div>
+                                    <div className="comment">
+                                        <textarea onChange={(e) => setComment(e.target.value)} />
+                                    </div>
+                                    <button type="submit" className="blue-btn add-review-btn">
+                                        Add review
+                                    </button>
+                                </div>
+                            </form>
+                            <div className="reviews">
+                                {reviews && reviews.map((review, index) =>
+                                    <div key={index} className="review">
+                                        <div className="review-header">
+                                            <div className="title-div">
+                                                <span>User</span>
+                                                <span>{review.username}</span>
+                                            </div>
+                                            <div>
+                                                <span>Date</span>
+                                                <span>{new Date(review.date).getDate() + '.' + (new Date(review.date).getMonth() + 1) + '.' + new Date(review.date).getFullYear()}</span>
+                                            </div>
+                                        </div>
+                                        <div className="review-body">
+                                            <div className="stars-div">
+                                                {[...Array(5)].map((star, index) =>
+                                                    <i style={{ color: review.star > index ? 'yellow' : '' }} key={index} className="fa-solid fa-star" />
+                                                )}
+                                            </div>
+                                            <input style={{ display: review.comment.length == 0 ? 'none' : '' }} className="comment" disabled type="text" defaultValue={review.comment} />
+                                        </div>
+                                    </div>
                                 )}
                             </div>
                         </div>

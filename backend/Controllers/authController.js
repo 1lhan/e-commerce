@@ -3,8 +3,23 @@ const router = express.Router();
 const User = require('../Models/userModel')
 const bcrypt = require('bcrypt')
 const saltRounds = 10;
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 require('dotenv').config()
+
+router.post('/change-password', async (req, res) => {
+    const { _id, currentPassword, newPassword } = req.body
+
+    let user = await User.findOne({ _id })
+    if (!user) return res.json({ action: false, msg: 'User could not find' })
+
+    let currentPasswordControl = await bcrypt.compare(currentPassword, user.password)
+    if (!currentPasswordControl) return res.json({ action: false, msg: 'Current password wrong' })
+
+    let hashedPassword = await bcrypt.hash(newPassword, saltRounds)
+    let changePassword = await User.findOneAndUpdate({ _id }, { $set: { password: hashedPassword } })
+    if (changePassword) return res.json({ action: true })
+    else return res.json({ action: false, msg: 'Change password action fail' })
+})
 
 router.post('/login', async (req, res) => {
     const { email, password } = req.body

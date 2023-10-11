@@ -26,6 +26,7 @@ export default function ProductsByCategory() {
         else if (sortName == 'highest-price') setProducts(_getProducts.sort((a, b) => b.price - a.price))
         else if (sortName == 'lowest-price') setProducts(_getProducts.sort((a, b) => a.price - b.price))
         else if (sortName == 'most-selled') setProducts(_getProducts.sort((a, b) => b.saleAmount - a.saleAmount))
+        else if (sortName == 'review') setProducts(_getProducts.sort((a, b) => b.reviews.averageStar - a.reviews.averageStar))
     }
 
     const sortHandle = (_sortname) => {
@@ -34,6 +35,7 @@ export default function ProductsByCategory() {
         else if (_sortname == 'highest-price') setProducts(products.sort((a, b) => b.price - a.price))
         else if (_sortname == 'lowest-price') setProducts(products.sort((a, b) => a.price - b.price))
         else if (_sortname == 'most-selled') setProducts(products.sort((a, b) => b.saleAmount - a.saleAmount))
+        else if (_sortname == 'review') setProducts(products.sort((a, b) => b.reviews.averageStar - a.reviews.averageStar))
     }
 
     const filterHandle = (name, value) => {
@@ -79,7 +81,7 @@ export default function ProductsByCategory() {
                             <div className='filter-labels'>
                                 {productAttributes[attributeName].map((attributeValue, index2) =>
                                     <label htmlFor={attributeName + attributeValue} key={index2} className='filter-label'>
-                                        <span>{attributeValue.includes('_') ? attributeValue.replace('_', ' ') : attributeValue}</span>
+                                        <span>{attributeValue.includes('_') ? attributeValue.split('_').join(' ') : attributeValue}</span>
                                         <input defaultChecked={searchParams.get(attributeName) != null ? searchParams.get(attributeName).includes(attributeValue) ? true : false : false} onClick={() => filterHandle(attributeName, attributeValue)} id={attributeName + attributeValue} type='checkbox'></input>
                                     </label>
                                 )}
@@ -100,6 +102,7 @@ export default function ProductsByCategory() {
                                 <span onClick={() => { setSortName('highest-price'); sortHandle('highest-price') }}>Highest Price</span>
                                 <span onClick={() => { setSortName('lowest-price'); sortHandle('lowest-price') }}>Lowest Price</span>
                                 <span onClick={() => { setSortName('most-selled'); sortHandle('most-selled') }}>Most Selled</span>
+                                <span onClick={() => { setSortName('review'); sortHandle('review') }}>Review</span>
                             </div>
                         </div>
                     </div>
@@ -113,6 +116,11 @@ export default function ProductsByCategory() {
                                 </div>
                                 <div className='product-informations'>
                                     <NavLink to={'/product/' + product.title} className="title">{product.title}</NavLink>
+                                    <div className='stars'>{[...Array(5)].map((star, index2) =>
+                                        <i style={{ color: product.reviews.averageStar > index2 ? 'yellow' : '#d1d5db' }} key={index2} className="fa-solid fa-star" />
+                                    )}
+                                        <span className='number-of-reviews'>{'(' + product.reviews.reviewsArray.length + ')'}</span>
+                                    </div>
                                     <span className='price'>{product.price.toFixed(2)}</span>
                                 </div>
                             </div>

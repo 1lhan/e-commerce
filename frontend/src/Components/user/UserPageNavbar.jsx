@@ -7,7 +7,7 @@ export default function UserPageNavbar() {
                 <i className="fa-solid fa-circle-info" />
                 <span>User Informations</span>
             </NavLink>
-            <NavLink className='navbar-item' to='/user-informations'>
+            <NavLink className='navbar-item' to='/my-orders'>
                 <i className="fa-solid fa-box" />
                 <span>My Orders</span>
             </NavLink>

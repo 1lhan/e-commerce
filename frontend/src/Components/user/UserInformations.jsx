@@ -2,12 +2,15 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import UserPageNavbar from "./UserPageNavbar"
 import { updateUser } from "../../Slices/authSlice"
+import { useLocation } from "react-router-dom"
+import { dynamicTitle } from "../../Slices/siteConfigSlice"
 
 export default function UserInformations() {
 
     const { user } = useSelector(state => state.auth)
     const { url } = useSelector(state => state.siteConfig)
     const dispatch = useDispatch()
+    const location = useLocation()
 
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
@@ -16,8 +19,15 @@ export default function UserInformations() {
     const [birthDate, setBirthDate] = useState('')
     const [gender, setGender] = useState('')
 
+    const [currentPassword, setCurrentPassword] = useState('')
+    const [newPassword, setNewPassword] = useState('')
+    const [newPasswordAgain, setNewPasswordAgain] = useState('')
+    const [formMsg, setFormMsg] = useState('')
+    const [infoDivText, setInfoDivText] = useState('')
+
     useEffect(() => {
-    }, [])
+        dispatch(dynamicTitle(location.pathname.slice(1)))
+    }, [location])
 
     const updateUserInformations = async (e) => {
         e.preventDefault()
@@ -39,18 +49,49 @@ export default function UserInformations() {
         }).then(_res => _res.json())
 
         if (_update.action) {
-            console.log('User Informations update succesful')
+            setInfoDivText('User informations updated')
             dispatch(updateUser(_update.user))
         }
-        else console.log('User Informations update faile')
+        else setInfoDivText('User Informations update fail')
+    }
+
+    const changePassword = async (e) => {
+        e.preventDefault()
+
+        if (currentPassword.length < 8) setFormMsg('Current password length should be more than 8')
+        else if (newPassword.length < 8) setFormMsg('New password length should be more than 8')
+        else if (newPassword != newPasswordAgain) setFormMsg('New passwords are not same')
+        else {
+            let _changePassword = await fetch(url + '/change-password', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json,text/plain',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ _id: user._id, currentPassword, newPassword })
+            }).then(_res => _res.json())
+
+            if (_changePassword.action) {
+                setInfoDivText('Password changed')
+                setFormMsg('')
+                e.target.reset()
+            }
+            else setFormMsg(_changePassword.msg)
+        }
     }
 
     return (
         <div className="user-informations-page container">
+            {infoDivText && <div className="info-div">
+                <span>{infoDivText}</span>
+                <i onClick={() => setInfoDivText('')} className="fa-solid fa-xmark" />
+            </div>}
             <UserPageNavbar />
-            <div className="content-div">
-                <h3 className="content-div-header">User Informations</h3>
-                <form onSubmit={updateUserInformations} className="form">
+            <div className="main-section">
+                <div className="main-section-header-div">
+                    <h3 className="main-section-header">User Informations</h3>
+                </div>
+                <form onSubmit={updateUserInformations} className="form user-informations-form">
                     <span className="form-row-item">
                         <div className="row-children-div">
                             <span className="item-header">First Name</span>
@@ -71,7 +112,7 @@ export default function UserInformations() {
                     </div>
                     <div className="form-item">
                         <span className="item-header">Birth Date</span>
-                        <input onChange={(e) => setBirthDate(e.target.value)} defaultValue={user?.userInformations?.birthDate.slice(0, 10)} type="date" />
+                        <input onChange={(e) => setBirthDate(e.target.value)} defaultValue={user?.userInformations?.birthDate?.slice(0, 10)} type="date" />
                     </div>
                     {user?.userInformations ? <div className="form-item gender-div">
                         <span className="item-header">Gender</span>
@@ -83,6 +124,25 @@ export default function UserInformations() {
                     </div> : ''}
 
                     <button className="submit-btn" type="submit">Update</button>
+                </form>
+                <form onSubmit={changePassword} className="form change-password-form">
+                    <div className="form-header-div">
+                        <h4>Change Password</h4>
+                    </div>
+                    <div className="form-item">
+                        <span>Current Password</span>
+                        <input onChange={(e) => setCurrentPassword(e.target.value)} type="password" />
+                    </div>
+                    <div className="form-item">
+                        <span>New Password</span>
+                        <input onChange={(e) => setNewPassword(e.target.value)} type="password" />
+                    </div>
+                    <div className="form-item">
+                        <span>New Password (Again)</span>
+                        <input onChange={(e) => setNewPasswordAgain(e.target.value)} type="password" />
+                    </div>
+                    {formMsg && <span className="warning-span">{formMsg}</span>}
+                    <button className="submit-btn" type="submit">Change Password</button>
                 </form>
             </div>
         </div>

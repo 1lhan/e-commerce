@@ -49,6 +49,10 @@ const productModel = mongoose.Schema({
                     required: false,
                     ref: 'User'
                 },
+                date: {
+                    type: Date,
+                    required: true
+                },
                 star: {
                     type: String,
                     required: false

@@ -43,7 +43,7 @@ export default function Register() {
                 e.target.reset()
                 setFormMsg('Register succesful')
             }
-            else setFormMsg(register.action.msg)
+            else setFormMsg(register.msg)
 
         }
     }
@@ -79,7 +79,7 @@ export default function Register() {
                     <span>Password (Again)</span>
                     <input onChange={(e) => setPasswordAgain(e.target.value)} type="password" />
                 </span>
-                {formMsg && <span className="form-msg-span">{formMsg}</span>}
+                {formMsg && <span className="warning-span form-msg-span">{formMsg}</span>}
                 <button className="submit-btn" type="submit">Register</button>
             </form>
         </div>

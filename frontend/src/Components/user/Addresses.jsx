@@ -2,17 +2,21 @@ import { useEffect, useState } from "react"
 import UserPageNavbar from "./UserPageNavbar"
 import { useDispatch, useSelector } from "react-redux"
 import { updateUser } from "../../Slices/authSlice"
+import { useLocation } from "react-router-dom"
+import { dynamicTitle } from "../../Slices/siteConfigSlice"
 
 export default function Addresses() {
 
     const { url } = useSelector(state => state.siteConfig)
     const { user } = useSelector(state => state.auth)
     const dispatch = useDispatch()
+    const location = useLocation()
 
     const [addressTitle, setAddressTitle] = useState('')
     const [address, setAddress] = useState('')
     const [formMsg, setFormMsg] = useState('')
     const [addAddressFormDisplay, setAddAddressFormDisplay] = useState(false)
+    const [infoDivText, setInfoDivText] = useState('')
 
     const addAddress = async (e) => {
         e.preventDefault()
@@ -30,13 +34,12 @@ export default function Addresses() {
             }).then(_res => _res.json())
 
             if (_addAddress.action) {
-                console.log('Address added')
+                setInfoDivText('Address added')
                 e.target.reset()
                 setAddAddressFormDisplay(false)
                 dispatch(updateUser(_addAddress.user))
 
             }
-            else console.log('Address add action fail')
         }
     }
 
@@ -52,10 +55,9 @@ export default function Addresses() {
             }).then(_res => _res.json())
 
             if (_deleteAddress.action) {
-                console.log('Address deleted')
+                setInfoDivText('Address deleted')
                 dispatch(updateUser(_deleteAddress.user))
             }
-            else console.log('Address delete action fail')
         }
     }
 
@@ -75,10 +77,9 @@ export default function Addresses() {
 
             if (_updateAddress.action) {
                 addressFormActiveHandle(e)
-                console.log('Address updated')
+                setInfoDivText('Address updated')
                 dispatch(updateUser(_updateAddress.user))
             }
-            else console.log('Address update action fail')
         }
     }
 
@@ -107,16 +108,21 @@ export default function Addresses() {
     }
 
     useEffect(() => {
-    }, [user])
+        dispatch(dynamicTitle(location.pathname.slice(1)))
+    }, [user, location])
 
     return (
         <div className="addresses-page container">
+            {infoDivText && <div className="info-div">
+                <span>{infoDivText}</span>
+                <i onClick={() => setInfoDivText('')} className="fa-solid fa-xmark" />
+            </div>}
             <UserPageNavbar />
-            <div className="content-div">
-                <h3 className="content-div-header">
-                    Addresses
+            <div className="main-section">
+                <div className="main-section-header-div">
+                    <h3 className="main-section-header">Addresses</h3>
                     <i onClick={() => setAddAddressFormDisplay(!addAddressFormDisplay)} className="add-address-btn fa-solid fa-plus" />
-                </h3>
+                </div>
                 <form style={{ display: addAddressFormDisplay ? 'flex' : 'none' }} onSubmit={addAddress} className="add-address-form form">
                     <span className="form-header">
                         Add Address

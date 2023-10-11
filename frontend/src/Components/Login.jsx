@@ -40,7 +40,7 @@ export default function Login() {
             
             navigate('/')
         }
-        else setFormMsg(_login.action.msg)
+        else setFormMsg(_login.msg)
     }
 
     useEffect(() => {
@@ -62,7 +62,7 @@ export default function Login() {
                     <span>Password</span>
                     <input onChange={(e) => setPassword(e.target.value)} type="password" />
                 </span>
-                {formMsg && <span className="form-msg-span">{formMsg}</span>}
+                {formMsg && <span className="warning-span form-msg-span">{formMsg}</span>}
                 <button className="submit-btn" type="submit">Login</button>
             </form>
         </div>

@@ -98,6 +98,10 @@ const userModel = mongoose.Schema({
                 required: true,
                 ref: 'Product'
             },
+            date:{
+                type:Date,
+                required:true
+            },
             comment: {
                 type: String,
                 required: true

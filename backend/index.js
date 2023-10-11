@@ -14,10 +14,12 @@ app.listen(5000, () => {
 const productController = require('./Controllers/productController')
 const authController = require('./Controllers/authController')
 const userController = require('./Controllers/userController')
+const adminController = require('./Controllers/adminController')
 
 app.use(productController)
 app.use(authController)
 app.use(userController)
+app.use(adminController)
 
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING)
     .then(() => console.log('connected to mongodb'))
