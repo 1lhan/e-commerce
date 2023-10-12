@@ -15,7 +15,7 @@ export default function MyOrders() {
     const getOrders = async () => {
         if (user && user._id) {
             let _orders = await fetch(url + '/get-orders/' + user._id).then(_res => _res.json())
-            setOrders(_orders.orders)
+            setOrders(_orders.orders.reverse())
         }
     }
 

@@ -16,6 +16,7 @@ export default function ProductsByCategory() {
     const [productAttributes, setProductAttributes] = useState({})
     const [isCategoryExist, setIsCategoryExist] = useState(false)
     const [sortName, setSortName] = useState('recomended-sort')
+    const [mobileFiltersDp, setMobileFiltersDp] = useState(false)
 
     const getProducts = async () => {
         let pathname = location.search.length == 0 ? location.search.slice(1) + 'category=' + categoryName : location.search.slice(1) + '&category=' + categoryName;
@@ -69,6 +70,27 @@ export default function ProductsByCategory() {
         <>{isCategoryExist ?
 
             <div className="products-by-category-page container">
+                <div style={{ display: mobileFiltersDp ? '' : 'none' }} className='filters-for-mobile'>
+                    <i onClick={() => setMobileFiltersDp(!mobileFiltersDp)} className="fa-solid fa-xmark"/>
+                    {productAttributes && Object.keys(productAttributes).map((attributeName, index) =>
+                        <div key={index} className='filter-div'>
+                            <input defaultChecked={index > 3 ? false : true} className='filter-labels-display-controller' id={attributeName} type='checkbox' />
+                            <label htmlFor={attributeName} className='filter-div-header'>
+                                {attributeName}
+                                <i className="fa-solid fa-caret-up" />
+                                <i className="fa-solid fa-caret-down" />
+                            </label>
+                            <div className='filter-labels'>
+                                {productAttributes[attributeName].map((attributeValue, index2) =>
+                                    <label htmlFor={attributeName + attributeValue} key={index2} className='filter-label'>
+                                        <span>{attributeValue.includes('_') ? attributeValue.split('_').join(' ') : attributeValue}</span>
+                                        <input defaultChecked={searchParams.get(attributeName) != null ? searchParams.get(attributeName).includes(attributeValue) ? true : false : false} onClick={() => filterHandle(attributeName, attributeValue)} id={attributeName + attributeValue} type='checkbox'></input>
+                                    </label>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
                 <div className='filters'>
                     {productAttributes && Object.keys(productAttributes).map((attributeName, index) =>
                         <div key={index} className='filter-div'>
@@ -91,6 +113,7 @@ export default function ProductsByCategory() {
                 </div>
                 <div className='content-div'>
                     <div className='content-top-div'>
+                        <i onClick={() => setMobileFiltersDp(!mobileFiltersDp)} className="fa-solid fa-filter" />
                         <div className='custom-sorter-select-div'>
                             <button className='custom-sorter-select-btn'>
                                 <span>{sortName.includes('-') ? sortName.replace('-', ' ') : sortName}</span>

@@ -334,6 +334,7 @@ header .header-div .categories .category-item {
   font-size: 1.05rem;
   border-bottom: 2px solid transparent;
   text-transform: capitalize;
+  z-index: 10;
 }
 header .header-div .categories .category-item:hover .category-item-dropdown {
   display: flex;
@@ -386,6 +387,7 @@ header .header-div .hamburger-menu {
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
+  position: relative;
   gap: 1rem;
   width: 100%;
 }
@@ -467,12 +469,19 @@ header .header-div .hamburger-menu {
 .products-by-category-page .content-div .content-top-div {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
-  align-items: flex-start;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
+}
+.products-by-category-page .content-div .content-top-div .fa-filter {
+  display: none;
+  padding: 0.5rem;
+  background: #f9fafb;
+  cursor: pointer;
 }
 .products-by-category-page .content-div .content-top-div .custom-sorter-select-div {
   position: relative;
+  margin-left: auto;
   width: 10rem;
 }
 .products-by-category-page .content-div .content-top-div .custom-sorter-select-div .custom-sorter-select-btn {
@@ -636,7 +645,7 @@ header .header-div .hamburger-menu {
   justify-content: flex-start;
   align-items: flex-start;
   width: 100%;
-  height: 40rem;
+  height: auto;
   border: 1px solid #d1d5db;
   border-radius: 2px;
 }
@@ -653,6 +662,7 @@ header .header-div .hamburger-menu {
   justify-content: flex-start;
   align-items: flex-start;
   height: 100%;
+  min-height: 30rem;
   flex: 1;
   gap: 2rem;
   padding: 1rem;
@@ -1174,6 +1184,7 @@ header .header-div .hamburger-menu {
 }
 .addresses-page .main-section .addresses .address {
   box-shadow: none;
+  background: #f9fafb;
   border: 1px solid #d1d5db;
   border-radius: 0;
   width: 32%;
@@ -1674,6 +1685,7 @@ header .header-div .hamburger-menu {
   height: 2rem;
   background: #f3f4f6;
   border: 1px solid #d1d5db;
+  z-index: 9;
 }
 .analysis-center-page .get-data-settings .dropdown-checkboxes .header-label {
   display: flex;
@@ -2190,6 +2202,194 @@ header .header-div .hamburger-menu {
 }
 
 @media (max-width: 600px) {
+  .products-by-category-page .filters {
+    display: none;
+  }
+  .products-by-category-page .filters-for-mobile {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    width: 100%;
+    gap: 0.5rem;
+    height: auto;
+    background: #fff;
+  }
+  .products-by-category-page .filters-for-mobile .fa-xmark {
+    padding: 0.5rem;
+    background: #f9fafb;
+    margin-left: auto;
+  }
+  .products-by-category-page .filters-for-mobile .filter-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    border-bottom: 1px solid #d1d5db;
+  }
+  .products-by-category-page .filters-for-mobile .filter-div .filter-div-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding: 0.5rem;
+    text-transform: capitalize;
+  }
+  .products-by-category-page .filters-for-mobile .filter-div .filter-labels-display-controller {
+    display: none;
+  }
+  .products-by-category-page .filters-for-mobile .filter-div .filter-labels-display-controller:checked ~ .filter-labels {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  .products-by-category-page .filters-for-mobile .filter-div .fa-caret-down {
+    display: none;
+  }
+  .products-by-category-page .filters-for-mobile .filter-div .fa-caret-up {
+    display: flex;
+  }
+  .products-by-category-page .filters-for-mobile .filter-div .filter-labels-display-controller:checked ~ .filter-div-header .fa-caret-up {
+    display: none;
+  }
+  .products-by-category-page .filters-for-mobile .filter-div .filter-labels-display-controller:checked + .filter-div-header .fa-caret-down {
+    display: flex;
+  }
+  .products-by-category-page .filters-for-mobile .filter-div .filter-labels {
+    display: none;
+    width: 100%;
+    padding: 0.5rem 0;
+    max-height: 12rem;
+    overflow: auto;
+  }
+  .products-by-category-page .filters-for-mobile .filter-div .filter-labels .filter-label {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0.25rem 0.5rem;
+  }
+  .products-by-category-page .filters-for-mobile .filter-div .filter-labels .filter-label:hover {
+    color: #22d3ee;
+  }
+  .products-by-category-page .content-div .content-top-div .fa-filter {
+    display: flex;
+  }
+  .product-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .product-page .product {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    height: auto;
+    border: 1px solid #d1d5db;
+    border-radius: 2px;
+  }
+  .product-page .product .image-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+  }
+  .product-page .product .product-infos .main-features .main-feature-item {
+    width: 49%;
+  }
+  .product-page .product-page-second-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
+    height: auto;
+  }
+  .product-page .product-page-second-section .nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    background: #f3f4f6;
+    width: 100%;
+    height: 2rem;
+    overflow-x: auto;
+  }
+  .product-page .product-page-second-section .nav .nav-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0 1rem;
+    height: 100%;
+    cursor: pointer;
+  }
+  .product-page .product-page-second-section .nav .nav-item:hover {
+    background: #d1d5db;
+  }
+  .product-page .product-page-second-section .product-informations-section {
+    width: 100%;
+  }
+  .product-page .product-page-second-section .product-informations-section .features .feature-span {
+    width: 49%;
+  }
+  .product-page .product-page-second-section .reviews-section .add-review-form {
+    width: 100%;
+  }
+  .product-page .product-page-second-section .reviews-section .reviews .review {
+    width: 100%;
+  }
+  .login-page,
+  .register-page {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+  .login-page .form,
+  .register-page .form {
+    min-width: 0;
+    width: 100%;
+  }
+  .login-page .form .choose-form-div,
+  .register-page .form .choose-form-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid #d1d5db;
+  }
+  .login-page .form .choose-form-div a,
+  .register-page .form .choose-form-div a {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    padding: 0.75rem;
+    cursor: pointer;
+  }
+  .login-page .form .choose-form-div a:hover,
+  .register-page .form .choose-form-div a:hover {
+    background: #f3f4f6;
+  }
   header .header-div .header-top-div .header-buttons .my-cart-btn {
     width: 3rem;
   }

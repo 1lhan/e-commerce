@@ -341,6 +341,7 @@ header {
                 font-size: 1.05rem;
                 border-bottom: 2px solid transparent;
                 text-transform: capitalize;
+                z-index: 10;
 
                 &:hover .category-item-dropdown {
                     @include flex(column, flex-start, flex-start);
@@ -383,7 +384,7 @@ header {
             cursor: pointer;
         }
 
-        .hamburger-menu{
+        .hamburger-menu {
             display: none;
         }
     }
@@ -395,6 +396,7 @@ header {
 
 .products-by-category-page {
     @include flex(row, space-between, flex-start);
+    position: relative;
     gap: 1rem;
     width: 100%;
 
@@ -469,11 +471,19 @@ header {
         flex: 80;
 
         .content-top-div {
-            @include flex(row, flex-end, flex-start);
+            @include flex(row, space-between, center);
             width: 100%;
+
+            .fa-filter {
+                display: none;
+                padding: 0.5rem;
+                background: $gray-50;
+                cursor: pointer;
+            }
 
             .custom-sorter-select-div {
                 position: relative;
+                margin-left: auto;
                 width: 10rem;
 
                 .custom-sorter-select-btn {
@@ -627,8 +637,7 @@ header {
     .product {
         @include flex(row, flex-start, flex-start);
         width: 100%;
-        //height: auto;
-        height: 40rem;
+        height: auto;
         border: 1px solid $gray-300;
         border-radius: 2px;
 
@@ -640,6 +649,7 @@ header {
         .product-infos {
             @include flex(column, flex-start, flex-start);
             height: 100%;
+            min-height: 30rem;
             flex: 1;
             gap: 2rem;
             padding: 1rem;
@@ -1128,6 +1138,7 @@ header {
 
             .address {
                 box-shadow: none;
+                background: $gray-50;
                 border: 1px solid $gray-300;
                 border-radius: 0;
                 width: 32%;
@@ -1590,6 +1601,7 @@ header {
             height: 2rem;
             background: $gray-100;
             border: 1px solid $gray-300;
+            z-index: 9;
 
             .header-label {
                 @include flex(row, center, center);
@@ -2075,6 +2087,196 @@ header {
 }
 
 @media (max-width:600px) {
+    .products-by-category-page {
+        .filters {
+            display: none;
+        }
+
+        .filters-for-mobile {
+            @include flex(column, flex-start, flex-start);
+            position: absolute;
+            z-index: 10;
+            top: 0;
+            left: 0;
+            width: 100%;
+            gap: 0.5rem;
+            height: auto;
+            background: #fff;
+
+            .fa-xmark{
+                padding: 0.5rem;
+                background: $gray-50;
+                margin-left: auto;
+            }
+
+            .filter-div {
+                @include flex(column, flex-start, flex-start);
+                width: 100%;
+                border-bottom: 1px solid $gray-300;
+
+                .filter-div-header {
+                    @include flex(row, space-between, center);
+                    width: 100%;
+                    font-size: 1.05rem;
+                    font-weight: 600;
+                    padding: 0.5rem;
+                    text-transform: capitalize;
+                }
+
+                .filter-labels-display-controller {
+                    display: none;
+                }
+
+                .filter-labels-display-controller:checked~.filter-labels {
+                    @include flex(column, flex-start, flex-start);
+                }
+
+                .fa-caret-down {
+                    display: none;
+                }
+
+                .fa-caret-up {
+                    display: flex;
+                }
+
+                .filter-labels-display-controller:checked~.filter-div-header .fa-caret-up {
+                    display: none;
+                }
+
+                .filter-labels-display-controller:checked+.filter-div-header .fa-caret-down {
+                    display: flex;
+                }
+
+                .filter-labels {
+                    display: none;
+                    width: 100%;
+                    padding: 0.5rem 0;
+                    max-height: 12rem;
+                    overflow: auto;
+
+                    .filter-label {
+                        @include flex(row, space-between, center);
+                        width: 100%;
+                        padding: 0.25rem 0.5rem;
+
+                        &:hover {
+                            color: $cyan-400;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        .content-div {
+            .content-top-div {
+                .fa-filter {
+                    display: flex;
+                }
+            }
+        }
+    }
+
+    .product-page {
+        @include flex(column, flex-start, flex-start);
+        gap: 1rem;
+
+        .product {
+            @include flex(column, flex-start, flex-start);
+            width: 100%;
+            height: auto;
+            border: 1px solid $gray-300;
+            border-radius: 2px;
+
+            .image-div {
+                @include flex(column, flex-start, center);
+                width: 100%;
+            }
+
+            .product-infos {
+                .main-features {
+                    .main-feature-item {
+                        width: 49%;
+                    }
+                }
+            }
+        }
+
+        .product-page-second-section {
+            @include flex(column, flex-start, flex-start);
+            gap: 1rem;
+            width: 100%;
+            height: auto;
+
+            .nav {
+                @include flex(row, flex-start, center);
+                background: $gray-100;
+                width: 100%;
+                height: 2rem;
+                overflow-x: auto;
+
+                .nav-item {
+                    @include flex(row, center, center);
+                    padding: 0 1rem;
+                    height: 100%;
+                    cursor: pointer;
+
+                    &:hover {
+                        background: $gray-300;
+                    }
+                }
+            }
+
+            .product-informations-section {
+                width: 100%;
+
+                .features {
+                    .feature-span {
+                        width: 49%;
+                    }
+                }
+            }
+
+            .reviews-section {
+                .add-review-form {
+                    width: 100%;
+                }
+
+                .reviews {
+                    .review {
+                        width: 100%;
+                    }
+                }
+            }
+        }
+    }
+
+    .login-page,
+    .register-page {
+        @include flex(row, center, center);
+
+        .form {
+            min-width: 0;
+            width: 100%;
+
+            .choose-form-div {
+                @include flex(row, space-between, center);
+                width: 100%;
+                border-bottom: 1px solid $gray-300;
+
+                a {
+                    @include flex(row, center, center);
+                    width: 50%;
+                    padding: 0.75rem;
+                    cursor: pointer;
+
+                    &:hover {
+                        background: $gray-100;
+                    }
+                }
+            }
+        }
+    }
 
     header {
         .header-div {

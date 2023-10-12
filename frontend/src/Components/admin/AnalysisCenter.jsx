@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
+import LineChart from "../LineChart"
 
 export default function AnalysisCenter() {
 
@@ -12,13 +13,25 @@ export default function AnalysisCenter() {
     const [numberOfSaledProducts, setNumberOfSaledProducts] = useState(0)
     const [productNumberByCategory, setProductNumberByCategory] = useState(null)
     const [productNumberByFeatures, setProductNumberByFeatures] = useState({})
-
+    const [valueForLineChart, setValueForLineChart] = useState([])
 
     const analysisDataHandle = async () => {
         document.getElementById('analysis-data-btn').style.display = 'none'
         document.getElementById('bubbless').style.display = 'flex'
 
         let orders = await fetch(url + '/get-orders').then(_res => _res.json())
+
+        let _values = []
+        for (let i in orders) {
+            let _date = new Date(orders[i].date.orderDate).getDate() + '.' + (new Date(orders[i].date.orderDate).getMonth() + 1) + '.' + new Date(orders[i].date.orderDate).getFullYear()
+            if (_values.length == 0 || _values.findIndex(item => item.date == _date) == -1) {
+                _values.push({ value: orders[i].totalPrice, date: _date })
+            }
+            else if (_values.findIndex(item => item.date == _date) != -1) {
+                _values[_values.findIndex(item => item.date == _date)].value += orders[i].totalPrice
+            }
+        }
+        setValueForLineChart(_values)
 
         let featuresDiv = document.getElementById('features-div').children
         let featuresArray = []
@@ -151,6 +164,11 @@ export default function AnalysisCenter() {
                         <span className="value">{numberOfSaledProducts}</span>
                     </div>
                 </div>
+                {valueForLineChart?.length > 0 &&
+                    <LineChart data={{
+                        chartHeader: 'Daily Earnings Chart', values: valueForLineChart, chartValueKey: 'value', horizontalAreaKey: 'date',
+                        chartWidth: 1150, chartHeight: 304, backgroundColor: '#f3f4f6', chartColor: 'orange'
+                    }} />}
                 <div style={{ display: productNumberByCategory == null ? 'none' : '' }} className="charts">
                     <h4><i className="fa-solid fa-chart-column" />Charts</h4>
                     {productNumberByCategory &&
@@ -196,6 +214,6 @@ export default function AnalysisCenter() {
                     )}
                 </div>
             </section>
-        </div>
+        </div >
     )
 }

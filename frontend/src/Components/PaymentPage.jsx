@@ -45,18 +45,29 @@ export default function PaymentPage() {
     }
 
     const completeShopping = async () => {
-        if (!deliveryAddress) setShoppingMsg('Missing delivery address')
-        else if (choosedContantInformations != 'default' && firstName.length < 1 || lastName.length < 1 || telephone.length == 0) {
-            setShoppingMsg('Missing contact informations')
+        let _bool = true
+        if (!deliveryAddress) {
+            _bool = false
+            setShoppingMsg('Missing delivery address')
         }
-        else if (choosedContantInformations == 'default' && user.firstName.length < 1 || user.lastName.length < 1 || user.userInformations.telephone.length <= 9) {
-            setShoppingMsg('Missing contact informations')
+        else if (choosedContantInformations != 'default') {
+            if (firstName.length < 1 || lastName.length < 1 || telephone.length == 0) {
+                _bool = false
+                setShoppingMsg('Missing contact informations')
+            }
+        }
+        else if (choosedContantInformations == 'default') {
+            if (user.firstName.length < 1 || user.lastName.length < 1 || user.userInformations.telephone.length <= 9) {
+                _bool = false
+                setShoppingMsg('Missing contact informations')
+            }
         }
         else if (cardNumber1.length != 4 || cardNumber2.length != 4 || cardNumber3.length != 4 || cardNumber4.length != 4 ||
             expirationDateMonth.length != 2 || expirationDateYear.length != 2 || cvv.length != 3 || nameOnCard.length < 4) {
+            _bool = false
             setShoppingMsg('Missing card informations')
         }
-        else {
+        if (_bool) {
             setShoppingMsg('')
             let contactInformations = choosedContantInformations == 'default' ? { firstName: user.firstName, lastName: user.lastName, telephone: user.userInformations.telephone } : { firstName, lastName, telephone }
 
@@ -90,6 +101,7 @@ export default function PaymentPage() {
 
     useEffect(() => {
         calculateCartTotalPrice(confirmedCart)
+        console.log(user)
     }, [confirmedCart])
 
     return (
@@ -148,19 +160,19 @@ export default function PaymentPage() {
                         <div className="form-item">
                             <span>Card Number</span>
                             <div className="card-number-inputs">
-                                <input onInput={(e) => {
+                                <input maxLength='4' onInput={(e) => {
                                     setCardNumber1(e.target.value)
                                     dynamicInputHandle(e, 1)
                                 }} type="text" />
-                                <input onInput={(e) => {
+                                <input maxLength='4' onInput={(e) => {
                                     setCardNumber2(e.target.value)
                                     dynamicInputHandle(e, 2)
                                 }} type="text" />
-                                <input onInput={(e) => {
+                                <input maxLength='4' onInput={(e) => {
                                     setCardNumber3(e.target.value)
                                     dynamicInputHandle(e, 3)
                                 }} type="text" />
-                                <input defaultValue={cardNumber4} onInput={(e) => {
+                                <input maxLength='4' defaultValue={cardNumber4} onInput={(e) => {
                                     setCardNumber4(e.target.value)
                                     dynamicInputHandle(e, 4)
                                 }} type="text" />
@@ -170,12 +182,12 @@ export default function PaymentPage() {
                             <div className="row-children">
                                 <span>Expiration Date</span>
                                 <div>
-                                    <input onInput={(e) => {
+                                    <input maxLength='2' onInput={(e) => {
                                         setExpirationDateMonth(e.target.value)
                                         dynamicInputForExpirationDateInput(e, 1)
                                     }} type="text" />
                                     <span>/</span>
-                                    <input onInput={(e) => {
+                                    <input maxLength='2' onInput={(e) => {
                                         setExpirationDateYear(e.target.value)
                                         dynamicInputForExpirationDateInput(e, 2)
                                     }
@@ -184,7 +196,7 @@ export default function PaymentPage() {
                             </div>
                             <div className="row-children">
                                 <span>Security Code (CVV)</span>
-                                <input onChange={(e) => setCvv(e.target.value)} type="text" />
+                                <input maxLength='3' onChange={(e) => setCvv(e.target.value)} type="text" />
                             </div>
                         </div>
                         <div className="form-item">
