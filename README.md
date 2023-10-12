@@ -1,0 +1,17 @@
+Pages
+
+![add product page](https://github.com/1lhan/e-commerce/assets/98101371/7eb38b07-1970-4248-b04f-0a1573f1949a)
+![addresses page](https://github.com/1lhan/e-commerce/assets/98101371/aedf5a3d-309d-40e3-8f39-1462e1b5ade9)
+![admin orders page](https://github.com/1lhan/e-commerce/assets/98101371/5234d44e-4863-4ba1-9a71-0d6abc4ebffc)
+![admin products page](https://github.com/1lhan/e-commerce/assets/98101371/4ba0554a-8fca-43c5-87cf-eb7206156370)
+![analysis center page](https://github.com/1lhan/e-commerce/assets/98101371/983884d7-a780-42f2-94c6-4b2626cbb3bb)
+![favorites page](https://github.com/1lhan/e-commerce/assets/98101371/55b3fea6-3645-4dae-8dab-5bdc2d171fdd)
+![login page](https://github.com/1lhan/e-commerce/assets/98101371/cb9ef5f8-1cba-40bd-b5a6-9660fab1c3db)
+![my cart page](https://github.com/1lhan/e-commerce/assets/98101371/584bc216-e9b6-499d-8996-cfbe32a6ffa3)
+![my orders page](https://github.com/1lhan/e-commerce/assets/98101371/0f8e5725-8e2c-48e5-8047-72ca4527d821)
+![payment page](https://github.com/1lhan/e-commerce/assets/98101371/92479614-136d-4e66-8bb6-0c2b05fb76dc)
+![product page](https://github.com/1lhan/e-commerce/assets/98101371/588866b3-1d35-40ad-b578-99d6ae882f7e)
+![products page](https://github.com/1lhan/e-commerce/assets/98101371/f5540629-8c08-481c-8e4b-d4e5ffbd1600)
+![register page](https://github.com/1lhan/e-commerce/assets/98101371/b0ade5fb-2907-49f6-b794-777eecec9918)
+![reviews page](https://github.com/1lhan/e-commerce/assets/98101371/c632c53c-ddde-4802-bab6-b46a72e6e72f)
+![user informations page](https://github.com/1lhan/e-commerce/assets/98101371/1508dd70-a30a-4eda-99bc-5020eff75594)
